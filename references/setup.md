@@ -24,7 +24,7 @@ npx @fianto/cli whoami
 
 ## 1. Create the account
 
-Email + password (12–128 chars) → a 6-digit emailed code (valid 10 minutes, 5 tries). The account
+Email + password (8–30 chars, at least two of lowercase, uppercase, digits, symbols) → a 6-digit emailed code (valid 10 minutes, 5 tries). The account
 exists only once the code is entered. Code emails are rate-limited and not guaranteed.
 
 ## 2. Set up the business (four steps on the setup page)
