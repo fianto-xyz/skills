@@ -74,6 +74,8 @@ Payload rules:
 - `data.order_id` is **your** id (top level of `data`, not in `metadata`). fianto ids are prefixed:
   `fian_cs_` session, `fian_ord_` order, `fian_pay_` payment, `fian_cus_` customer, `fian_sub_`
   subscription, `fian_plan_` plan, `fian_price_` price.
+- On the merchant's **Shop application** endpoint, `order_id` is fianto's: `shop_<uuid>` for a shop sale,
+  `plink_<uuid>` for a payment-link sale; `metadata.source` says which (references/concepts.md).
 - Amounts in payloads (`amount`, `fee_amount`, `total_amount`, `period.amount_due`, `period.fee_due`,
   `duplicate.amount`) are **strings of USDC base units, 6 decimals**: `"25000000"` = 25 USDC. Compare
   against your price with `usdc.toBaseUnits('25.00')` or format with `usdc.format(...)` — never floats.

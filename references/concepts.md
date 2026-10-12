@@ -2,7 +2,8 @@
 
 Live pages: https://docs.fianto.xyz/get-started/what-is-fianto.md,
 `/get-started/how-money-moves.md`, `/concepts/{finality,fees,payment-lifecycle,subscription-lifecycle,subscriptions-program}.md`,
-`/payers/{paying-with-fianto,what-it-costs,your-subscriptions,get-help}.md`
+`/payers/{paying-with-fianto,what-it-costs,your-subscriptions,get-help}.md`,
+`/merchants/{shop,payment-links}.md`, `/developers/{shop-sales,payment-link-sales}.md`
 
 Use this to answer "how does it work?", "who pays what?" and "why hasn't my order updated?" for
 developers, merchants and their customers (payers).
@@ -67,6 +68,26 @@ fianto broadcasts it ──► CONFIRMED  (payer sees "Payment complete")
   A payer's cancel takes effect at period end. A merchant's cancel is final and does not end the
   on-chain subscription.
 
+## Selling without code: shops and payment links
+
+A merchant can also sell from the dashboard, with no integration:
+
+- a **shop**, a page of their own at `https://<name>.fianto.xyz`;
+- **payment links**, made under **Payments → Payment links**: a reusable link
+  `https://checkout.fianto.xyz/l/<16 characters>` that sells one catalog price (one-time or recurring).
+
+Both are dashboard-only: no v1 endpoint, SDK call or API key creates, lists or reads them. Their checkout
+sessions belong to the merchant's **"Shop" application**, made by the first shop or the first Pay on a payment
+link. It has no secret, so v1 never returns these sales; they reach code only through that application's
+webhook URL (settable in Developers), with the usual event types. Tell them apart:
+
+| Sale | `order_id` | `metadata` |
+|---|---|---|
+| Shop | `shop_<uuid>` | `{ "source": "shop", "shop_slug": "<name>" }` |
+| Payment link | `plink_<uuid>` | `{ "source": "payment_link", "payment_link": "<the link's 16-character code>" }` |
+
+A handler on the merchant's own application never receives them. Payment links send the payer no email.
+
 ## What fianto is not
 
 - Not a custodian, and there is **no refund API**: refunds are USDC the merchant sends from their own
@@ -86,6 +107,8 @@ fianto broadcasts it ──► CONFIRMED  (payer sees "Payment complete")
 | "Can I change a subscriber's price?" | No; add a new price for new subscribers. Existing ones keep their terms |
 | "The payer paid twice" | `order.duplicate_payment`; the USDC is in the merchant's wallet — refund by hand |
 | "Can I test without real money?" | Not on the production API; use `fianto trigger` samples or a self-hosted/local backend on devnet |
+| "Can I create a payment link through the API?" | No. Payment links are made in the dashboard only; from code, create a checkout session |
+| "Webhooks arrive with `order_id` `plink_…` or `shop_…`" | Payment-link or shop sales, sent to the merchant's Shop application endpoint; read `metadata.source` |
 | "Who does the payer contact?" | The shop, for payments and refunds; support@fianto.xyz for the checkout page or portal |
 
 ## Ids at a glance

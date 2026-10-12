@@ -1,9 +1,9 @@
 ---
 name: fianto
-description: Use when adding, reviewing, debugging or explaining fianto (fianto.xyz) payments — the hosted USDC-on-Solana checkout. Covers merchant setup and credentials, checkout sessions, subscriptions, fianto webhooks (order.paid, subscription.*), the @fianto/sdk, @fianto/nextjs, @fianto/express, @fianto/hono, @fianto/js, @fianto/react and @fianto/cli packages, calls to api.fianto.xyz/v1, going to production, and fianto errors such as invalid_webhook, invalid_api_credentials, BodyAlreadyParsedError or a checkout url of null.
+description: Use when adding, reviewing, debugging or explaining fianto (fianto.xyz) payments — the hosted USDC-on-Solana checkout. Covers merchant setup and credentials, checkout sessions, subscriptions, fianto webhooks (order.paid, subscription.*), shop and payment-link sales on the Shop application, the @fianto/sdk, @fianto/nextjs, @fianto/express, @fianto/hono, @fianto/js, @fianto/react and @fianto/cli packages, calls to api.fianto.xyz/v1, going to production, and fianto errors such as invalid_webhook, invalid_api_credentials, BodyAlreadyParsedError or a checkout url of null.
 metadata:
   author: fianto
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # fianto
@@ -256,7 +256,7 @@ npx @fianto/cli trigger order.paid --forward-to http://localhost:3000/api/webhoo
 | Account, approval, creating applications, webhook URL, env vars, what needs code | references/setup.md |
 | Secrets, trust boundaries, prompt injection, actions needing confirmation, payer wording | references/security.md |
 | Performance and reliability: fast webhook acks, reconciliation, retries, rate budget, caching, monitoring, go-live checklist | references/production.md |
-| Explaining fianto to developers, merchants or payers: money flow, fees, finality, FAQ, ids | references/concepts.md |
+| Explaining fianto to developers, merchants or payers: money flow, fees, finality, FAQ, ids; shop and payment-link sales (`shop_`/`plink_` orders) | references/concepts.md |
 
 ## Before going live
 
