@@ -105,7 +105,7 @@ A handler on the merchant's own application never receives them. Payment links s
 | "The payer saw success but my order isn't paid" | Normal for a few moments: success shows at confirmed, `order.paid` comes at finalized. If it stays pending, check the webhook URL is verified and read the order with `retrieveByOrderId` |
 | "The popup closed — did they pay?" | Unknown. Check the order; never tell them they weren't charged |
 | "Can I refund through fianto?" | No. Send USDC from the merchant wallet to the payer's wallet |
-| "Why is the payer charged more than my price?" | The service fee is added on top (when above zero); fianto pays the Solana network fee and account deposits |
+| "Why is the payer charged more than my price?" | The service fee is added on top (when above zero), and every subscription charge, the first included, adds the plan's flat network fee in USDC (currently 0.01 USDC); fianto pays the Solana network fee and account deposits |
 | "Can I change a subscriber's price?" | No; add a new price for new subscribers. Existing ones keep their terms |
 | "The payer paid twice" | `order.duplicate_payment`; the USDC is in the merchant's wallet — refund by hand |
 | "Can I test without real money?" | Not on the production API; use `fianto trigger` samples or a self-hosted/local backend on devnet |

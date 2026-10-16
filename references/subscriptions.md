@@ -120,7 +120,10 @@ portal).
 
 ## Money
 
-When subscribing the payer pays the first period's price + service fee (when >0). fianto pays the
-Solana network fee and the deposit for the accounts the subscribe transaction creates. Each renewal pulls price + fee. The shared
+When subscribing the payer pays the first period's price + service fee (when >0) + the plan's flat
+network fee in USDC (fixed per plan when it is created, currently 0.01 USDC; none on plans created
+before it). fianto pays the Solana network fee and the deposit for the accounts the subscribe
+transaction creates. Each renewal pulls the same total again: price + fee + network fee
+(`total_amount` = `amount` + `fee_amount` + `network_fee_amount`). The shared
 USDC approval is one per wallet and mint, across every Subscriptions-program subscription: never tell
 a payer to revoke it to stop one subscription.
