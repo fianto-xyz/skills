@@ -40,17 +40,19 @@ fianto broadcasts it ──► CONFIRMED  (payer sees "Payment complete")
 
 ## Who pays what
 
-| When | Price (USDC) | Service fee (USDC) | Network fee (SOL) | Account rent (SOL) |
+| When | Price (USDC) | Service fee (USDC) | Solana network fee (SOL) | Account deposit (SOL) |
 |---|---|---|---|---|
-| One-time payment | Payer → merchant | Payer, when > 0 | Payer | None |
-| Starting a subscription | Payer, first period | Payer, when > 0 | Payer | Payer |
+| One-time payment | Payer → merchant | Payer, when > 0 | fianto | None |
+| Starting a subscription | Payer, first period | Payer, when > 0 | fianto | fianto |
 | Each renewal | Pulled from payer's wallet | Pulled with it, when > 0 | fianto | None |
+
+Payers need only USDC, no SOL. fianto closes ended subscriptions itself; there is no reclaim step.
 
 - The merchant receives the **full price**; fianto's service fee (capped at 10 %, rounded down in
   the payer's favour) is **added on top** and paid by the payer. The checkout page always shows a
   "Service fee" line ("None" when zero). The fee is fixed when the session is created.
 - In the API: `amount` = price, `fee_amount` = fee, `total_amount` = what the payer paid (base units).
-- The payer needs an existing, unfrozen USDC token account, enough USDC, and ≥ 0.00001 SOL; the
+- The payer needs an existing, unfrozen USDC token account, and enough USDC (no SOL); the
   wallet must be able to sign a transaction without sending it.
 
 ## Subscriptions
@@ -103,7 +105,7 @@ A handler on the merchant's own application never receives them. Payment links s
 | "The payer saw success but my order isn't paid" | Normal for a few moments: success shows at confirmed, `order.paid` comes at finalized. If it stays pending, check the webhook URL is verified and read the order with `retrieveByOrderId` |
 | "The popup closed — did they pay?" | Unknown. Check the order; never tell them they weren't charged |
 | "Can I refund through fianto?" | No. Send USDC from the merchant wallet to the payer's wallet |
-| "Why is the payer charged more than my price?" | The service fee is added on top (when above zero), plus a small SOL network fee |
+| "Why is the payer charged more than my price?" | The service fee is added on top (when above zero); fianto pays the Solana network fee and account deposits |
 | "Can I change a subscriber's price?" | No; add a new price for new subscribers. Existing ones keep their terms |
 | "The payer paid twice" | `order.duplicate_payment`; the USDC is in the merchant's wallet — refund by hand |
 | "Can I test without real money?" | Not on the production API; use `fianto trigger` samples or a self-hosted/local backend on devnet |

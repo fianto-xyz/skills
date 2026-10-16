@@ -79,7 +79,7 @@ every webhook apply (webhooks.md).
 
 ## Renewals
 
-- fianto's charging key signs each renewal and pays its network fee; the payer pays price + service fee.
+- fianto's charging key signs each renewal and pays its Solana network fee; the payer pays price + service fee.
 - Attempts: 2 min after the period ends, then 1 h, 6 h, 24 h after it.
 - **Counted** failures: `INSUFFICIENT_FUNDS`, `DELEGATION_REVOKED`, `ACCOUNT_FROZEN`, `ACCOUNT_CLOSED`.
   Other failures retry every 5 min without using an attempt — except a renewal refused because the
@@ -112,7 +112,7 @@ await fianto.subscriptions.cancel(subscriptionId, { at: 'period_end' }); // or {
 cannot be undone; the payer's on-chain subscription stays live; with `now` a renewal already in
 flight can still land. There is no refund API — refunds are sent manually from the merchant's
 wallet. The same wallet cannot re-subscribe to the same plan until the payer uses "Cancel on Solana"
-in the payer portal, waits for the on-chain end and reclaims the rent.
+in the payer portal and waits for the on-chain end; fianto then closes the ended subscription itself.
 
 Payers can also cancel themselves (payer portal or another wallet app): ends at period end,
 `subscription.cancel_scheduled` with `PAYER_CANCELED` (picked up within ~5 min if made outside the
@@ -120,7 +120,7 @@ portal).
 
 ## Money
 
-When subscribing the payer pays the first period's price + service fee (when >0) + network fee +
-rent for the accounts the subscribe transaction creates. Each renewal pulls price + fee. The shared
+When subscribing the payer pays the first period's price + service fee (when >0). fianto pays the
+Solana network fee and the deposit for the accounts the subscribe transaction creates. Each renewal pulls price + fee. The shared
 USDC approval is one per wallet and mint, across every Subscriptions-program subscription: never tell
 a payer to revoke it to stop one subscription.
