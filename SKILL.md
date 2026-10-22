@@ -156,7 +156,8 @@ FIANTO_APP_ID=fian_app_...
 FIANTO_APP_SECRET=fian_sk_live_...
 FIANTO_WEBHOOK_SECRET=whsec_...        # "Reveal signing secret" once the app has a webhook URL
 # FIANTO_BASE_URL=...                  # only for a self-hosted or local fianto backend
-# FIANTO_NETWORK=devnet                # optional: the devnet sandbox (test USDC), same keys; default mainnet
+# FIANTO_NETWORK=devnet                # optional: the devnet sandbox (test USDC), same keys; default mainnet.
+#                                      # needs the SDK/CLI release that adds `network` (the next minor after the current published one)
 ```
 
 ```ts

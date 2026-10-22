@@ -6,7 +6,6 @@ Live pages: https://docs.fianto.xyz/developers/devnet.md, https://docs.fianto.xy
 test USDC on Solana devnet. Pick it with `new Fianto({ network: 'devnet' })` or `FIANTO_NETWORK=devnet`
 (SDK) and `--network devnet` or `FIANTO_NETWORK` (CLI, every command that calls the API, `events tail`
 included). Needs an SDK/CLI release that has `network`; default `mainnet`; anything else throws / exits 2.
-Live page: https://docs.fianto.xyz/developers/devnet.md
 
 - Base URL `https://devnet-api.fianto.xyz` (`DEVNET_BASE_URL`); an explicit `baseUrl` / `FIANTO_BASE_URL` wins.
 - **Approval is required on both networks** (decided on mainnet); applications are created and rotated on
@@ -17,9 +16,9 @@ Live page: https://docs.fianto.xyz/developers/devnet.md
 - Webhooks: set the devnet URL in the dashboard with the network picker on Devnet; it has its own signing
   secret. Every event and every v1 object carries `network: "mainnet" | "devnet"`. Pass `{ network }` to
   `verifyWebhook` / `createWebhookHandler` to refuse the other network (`network_mismatch`; an event with no
-  `network` fails too). `fianto trigger` samples say `mainnet` and `events tail` forwards no `network`: leave
-  `network` unset on a route you test with those.
-- No platform fee on devnet; fianto pays network fees and rent. No email. Checkout shows a "Devnet" badge
+  `network` fails too). `fianto trigger` samples carry the CLI's network (`--network`, else `FIANTO_NETWORK`, else
+  `mainnet`) and `events tail` forwards each event's `network` as the API returned it.
+- Devnet charges no platform fee and no USDC network fee; fianto pays the Solana transaction fees and rent, as on mainnet. No email. Checkout shows a "Devnet" badge
   and a "Get test USDC" faucet link (https://faucet.circle.com/); explorer links carry `?cluster=devnet`.
 - A devnet call may answer 503 `service_busy` with `Retry-After`: retry after the delay.
 

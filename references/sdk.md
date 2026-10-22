@@ -43,7 +43,7 @@ const fianto = new Fianto(); // FIANTO_APP_ID, FIANTO_APP_SECRET, optional FIANT
 | `appId` | `FIANTO_APP_ID` | required (`fian_app_…`) |
 | `appSecret` | `FIANTO_APP_SECRET` | required (`fian_sk_live_…`), server only |
 | `baseUrl` | `FIANTO_BASE_URL` | `https://api.fianto.xyz` (https except `localhost`, `127.0.0.1`, `[::1]`; **without** `/v1`) |
-| `network` | `FIANTO_NETWORK` | `'mainnet'`; `'devnet'` = sandbox at `https://devnet-api.fianto.xyz` (`DEVNET_BASE_URL`), test USDC, same keys. Other value throws `Invalid network: expected "mainnet" or "devnet".`. `baseUrl` wins |
+| `network` | `FIANTO_NETWORK` | `'mainnet'`; `'devnet'` = sandbox at `https://devnet-api.fianto.xyz` (`DEVNET_BASE_URL`), test USDC, same keys. Needs the SDK release that adds `network` (the next minor after the current published one). Other value throws `Invalid network: expected "mainnet" or "devnet".`. `baseUrl` wins |
 | `timeoutMs` | — | 30000 per attempt |
 | `maxRetries` | — | 2 (0–10) |
 | `fetch` | — | global `fetch` |
