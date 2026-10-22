@@ -20,6 +20,8 @@ included). Needs an SDK/CLI release that has `network`; default `mainnet`; anyth
   `mainnet`) and `events tail` forwards each event's `network` as the API returned it.
 - Devnet charges no platform fee and no USDC network fee; fianto pays the Solana transaction fees and rent, as on mainnet. No email. Checkout shows a "Devnet" badge
   and a "Get test USDC" faucet link (https://faucet.circle.com/); explorer links carry `?cluster=devnet`.
+- The receiving wallet needs a devnet USDC token account too (test USDC is its own token): until it gets
+  any test USDC once, creating a devnet checkout fails with 422 `merchant_token_account_missing`.
 - A devnet call may answer 503 `service_busy` with `Retry-After`: retry after the delay.
 
 ## Other ways to test
