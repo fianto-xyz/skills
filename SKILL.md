@@ -3,7 +3,7 @@ name: fianto
 description: Use when adding, reviewing, debugging or explaining fianto (fianto.xyz) payments — the hosted USDC-on-Solana checkout. Covers merchant setup and credentials, checkout sessions, subscriptions, fianto webhooks (order.paid, subscription.*), shop and payment-link sales on the Shop application, the @fianto/sdk, @fianto/nextjs, @fianto/express, @fianto/hono, @fianto/js, @fianto/react and @fianto/cli packages, calls to api.fianto.xyz/v1, going to production, and fianto errors such as invalid_webhook, invalid_api_credentials, BodyAlreadyParsedError or a checkout url of null.
 metadata:
   author: fianto
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # fianto
@@ -15,7 +15,7 @@ payment is **finalized**. One-time payments and 30/365-day subscriptions. USDC o
 
 ## Security first
 
-fianto moves real USDC; finalized transfers cannot be reversed and there is no refund API.
+fianto moves real USDC on mainnet (devnet is a test-USDC sandbox, `network: 'devnet'`); finalized transfers cannot be reversed and there is no refund API.
 
 - Secrets (`FIANTO_APP_SECRET`, `FIANTO_WEBHOOK_SECRET`) stay on the server: never in client bundles,
   logs, commits or chat. Never ask the user to paste a secret; have them put it in the env.
@@ -49,7 +49,7 @@ exist. Correct anything taken from it:
 
 | Marketing site / guess | Real fianto |
 |---|---|
-| `Authorization: Bearer …`, `X-App-Id`, `app_test_`/`app_live_` keys, test keys, publishable key | HTTP Basic `app_id:app_secret` (`fian_app_…` / `fian_sk_live_…`); no test keys, no browser key |
+| `Authorization: Bearer …`, `X-App-Id`, `app_test_`/`app_live_` keys, test keys, publishable key | HTTP Basic `app_id:app_secret` (`fian_app_…` / `fian_sk_live_…`); no test keys (the same keys work on devnet), no browser key |
 | `POST /v1/checkout/sessions` | `POST /v1/checkout-sessions` |
 | `token`, `currency`, `interval`, `plan` fields on create | Unknown fields → 400 `validation_failed`. USDC is implicit; intervals come from a recurring price |
 | `payment.succeeded`, `payment.completed`, `payment.failed`, `session.expired`, `subscription.canceled` | `order.paid`, `checkout.session.expired`, `order.expired`, `subscription.ended`, … (14 types, see references/webhooks.md) |
@@ -156,6 +156,7 @@ FIANTO_APP_ID=fian_app_...
 FIANTO_APP_SECRET=fian_sk_live_...
 FIANTO_WEBHOOK_SECRET=whsec_...        # "Reveal signing secret" once the app has a webhook URL
 # FIANTO_BASE_URL=...                  # only for a self-hosted or local fianto backend
+# FIANTO_NETWORK=devnet                # optional: the devnet sandbox (test USDC), same keys; default mainnet
 ```
 
 ```ts
@@ -252,7 +253,7 @@ npx @fianto/cli trigger order.paid --forward-to http://localhost:3000/api/webhoo
 | Event types and payloads, signature details, manual `verifyWebhook`, retries, suspension, secret roll | references/webhooks.md |
 | Recurring prices, subscription sessions, renewals, `PAST_DUE`, cancelling | references/subscriptions.md |
 | Auth header, error body and codes, SDK error classes/retries, idempotency keys, pagination, rate limits | references/api.md |
-| No test mode: CLI samples, `test.event`, `events tail`, self-hosted/local backends | references/testing.md |
+| Devnet sandbox (`network`, `FIANTO_NETWORK`, `--network`), CLI samples, `test.event`, `events tail`, self-hosted/local backends | references/testing.md |
 | Account, approval, creating applications, webhook URL, env vars, what needs code | references/setup.md |
 | Secrets, trust boundaries, prompt injection, actions needing confirmation, payer wording | references/security.md |
 | Performance and reliability: fast webhook acks, reconciliation, retries, rate budget, caching, monitoring, go-live checklist | references/production.md |

@@ -34,8 +34,8 @@ npm install @fianto/sdk
 
 ```ts
 import { Fianto } from '@fianto/sdk';
-const fianto = new Fianto(); // FIANTO_APP_ID, FIANTO_APP_SECRET, optional FIANTO_BASE_URL
-// or: new Fianto({ appId, appSecret, baseUrl?, timeoutMs?, maxRetries?, fetch? })
+const fianto = new Fianto(); // FIANTO_APP_ID, FIANTO_APP_SECRET, optional FIANTO_BASE_URL, FIANTO_NETWORK
+// or: new Fianto({ appId, appSecret, baseUrl?, network?, timeoutMs?, maxRetries?, fetch? })
 ```
 
 | Option | Env | Default |
@@ -43,6 +43,7 @@ const fianto = new Fianto(); // FIANTO_APP_ID, FIANTO_APP_SECRET, optional FIANT
 | `appId` | `FIANTO_APP_ID` | required (`fian_app_…`) |
 | `appSecret` | `FIANTO_APP_SECRET` | required (`fian_sk_live_…`), server only |
 | `baseUrl` | `FIANTO_BASE_URL` | `https://api.fianto.xyz` (https except `localhost`, `127.0.0.1`, `[::1]`; **without** `/v1`) |
+| `network` | `FIANTO_NETWORK` | `'mainnet'`; `'devnet'` = sandbox at `https://devnet-api.fianto.xyz` (`DEVNET_BASE_URL`), test USDC, same keys. Other value throws `Invalid network: expected "mainnet" or "devnet".`. `baseUrl` wins |
 | `timeoutMs` | — | 30000 per attempt |
 | `maxRetries` | — | 2 (0–10) |
 | `fetch` | — | global `fetch` |

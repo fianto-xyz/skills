@@ -75,6 +75,7 @@ API keys answer 401. Decision emails are best effort; the setup page is the trut
 | `FIANTO_APP_SECRET` | Shown once at create / roll | same — server only |
 | `FIANTO_WEBHOOK_SECRET` | "Reveal signing secret" (after a URL is set) | webhook handler, CLI `trigger`/`events tail`/`sign` |
 | `FIANTO_BASE_URL` | Only for a self-hosted or local fianto backend | SDK, CLI |
+| `FIANTO_NETWORK` | Optional: `devnet` for the test-USDC sandbox, same keys (default `mainnet`) | SDK, CLI |
 
 Next.js reads `.env.local` itself. Node (Express, Hono) needs `node --env-file=.env` (Node ≥20.6) or
 `dotenv`. Cloudflare Workers: Worker secrets, read from `c.env`. The CLI reads only exported shell

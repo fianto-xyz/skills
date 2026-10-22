@@ -14,7 +14,7 @@ every attempt); ≤2,048 chars.
 A new URL is **pending** until it passes a signed `endpoint.verification` request:
 
 ```json
-{ "type": "endpoint.verification", "timestamp": "2026-09-28T10:00:00.000Z", "data": { "challenge": "…" } }
+{ "type": "endpoint.verification", "timestamp": "2026-09-28T10:00:00.000Z", "network": "mainnet", "data": { "challenge": "…" } }
 ```
 
 Answer within **5 s** with HTTP **200** and `{"challenge":"<the value received>"}`. Other statuses fail;
@@ -43,10 +43,11 @@ the SDK rejects >300 s skew by default (settable 1–3,600, never off). Keep the
 ## Envelope and event types
 
 ```json
-{ "id": "evt_<32 hex>", "type": "order.paid", "timestamp": "…", "data": { … } }
+{ "id": "evt_<32 hex>", "type": "order.paid", "timestamp": "…", "network": "mainnet", "data": { … } }
 ```
 
-`GET /v1/events[/{id}]` returns the same envelope plus `object: "event"`.
+`GET /v1/events[/{id}]` returns the same envelope plus `object: "event"`. `network` is `"mainnet"` or
+`"devnet"`. The devnet endpoint is set separately (dashboard, Devnet selected) and has its own signing secret.
 
 | Event | When |
 |---|---|
@@ -116,6 +117,7 @@ timestamp, answers `endpoint.verification`, and calls one callback per type.
 |---|---|
 | `secret` | `FIANTO_WEBHOOK_SECRET` read per request; string or array (during a roll). `[]` throws |
 | `toleranceSeconds` | 300 (1–3,600) |
+| `network` | not checked. `'mainnet'` or `'devnet'`: an event from the other network (or none) → 400 `invalid_webhook`, reason `network_mismatch` |
 | `maxBodyBytes` | 1 MiB → larger bodies get 413 `{"error":"payload_too_large"}` |
 | `onCheckoutSessionCompleted`, `onCheckoutSessionExpired`, `onCheckoutSessionCanceled`, `onOrderPaid`, `onOrderExpired`, `onOrderDuplicatePayment`, `onSubscriptionCreated`, `onSubscriptionRenewed`, `onSubscriptionPaymentFailed`, `onSubscriptionPastDue`, `onSubscriptionCancelScheduled`, `onSubscriptionCancelWithdrawn`, `onSubscriptionEnded`, `onTestEvent` | One per type, typed `event` |
 | `onEvent` | After the type's callback, for every verified event except the challenge |
@@ -170,7 +172,8 @@ export async function POST(request: Request) {
 In Express use `express.raw({ type: '*/*' })` on that route (before any global JSON parser) and pass
 `req.body` (a Buffer). `rawBody` may be a string, `Uint8Array` or `ArrayBuffer` — never re-serialised
 JSON. Failure `reason`s: `missing_headers`, `invalid_signature_header`, `timestamp_out_of_tolerance`,
-`invalid_secret`, `no_matching_signature`, `invalid_payload`.
+`invalid_secret`, `no_matching_signature`, `invalid_payload`, and `network_mismatch` (only when you pass
+`{ network }` to `verifyWebhook` or `createWebhookHandler`: the event's `network` differs or is absent).
 
 ## Rolling the signing secret
 

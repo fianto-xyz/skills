@@ -94,7 +94,7 @@ A handler on the merchant's own application never receives them. Payment links s
 
 - Not a custodian, and there is **no refund API**: refunds are USDC the merchant sends from their own
   wallet.
-- **No test mode** or test keys; testing uses signed samples, `test.event`, and self-hosted/local backends.
+- **No test keys.** Devnet is a sandbox with test USDC and the same keys: `network: 'devnet'` / `FIANTO_NETWORK=devnet`. Other testing: signed samples, `test.event`, self-hosted/local backends.
 - Not usable before review: every merchant account is approved by an admin first.
 - fianto sends payers **no emails or receipts**; the email a payer enters goes to the shop.
 
@@ -108,7 +108,7 @@ A handler on the merchant's own application never receives them. Payment links s
 | "Why is the payer charged more than my price?" | The service fee is added on top (when above zero), and every subscription charge, the first included, adds the plan's flat network fee in USDC (currently 0.01 USDC); fianto pays the Solana network fee and account deposits |
 | "Can I change a subscriber's price?" | No; add a new price for new subscribers. Existing ones keep their terms |
 | "The payer paid twice" | `order.duplicate_payment`; the USDC is in the merchant's wallet — refund by hand |
-| "Can I test without real money?" | Not on the production API; use `fianto trigger` samples or a self-hosted/local backend on devnet |
+| "Can I test without real money?" | Yes, on devnet: `new Fianto({ network: 'devnet' })` or `FIANTO_NETWORK=devnet`, same keys, test USDC (faucet link on the checkout page). Approved merchants only. Also `fianto trigger` samples or a self-hosted/local backend |
 | "Can I create a payment link through the API?" | No. Payment links are made in the dashboard only; from code, create a checkout session |
 | "Webhooks arrive with `order_id` `plink_…` or `shop_…`" | Payment-link or shop sales, sent to the merchant's Shop application endpoint; read `metadata.source` |
 | "Who does the payer contact?" | The shop, for payments and refunds; support@fianto.xyz for the checkout page or portal |

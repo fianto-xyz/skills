@@ -1,13 +1,29 @@
 # Testing and the CLI
 
-Live pages: https://docs.fianto.xyz/developers/testing.md, https://docs.fianto.xyz/developers/cli.md
+Live pages: https://docs.fianto.xyz/developers/devnet.md, https://docs.fianto.xyz/developers/testing.md, https://docs.fianto.xyz/developers/cli.md
 
-**There is no test mode, no test keys and no sandbox.** Keys start `fian_sk_live_` on every
-deployment. Each fianto deployment runs on one Solana cluster (mainnet-beta, devnet or localnet),
-set by that backend itself: the deployment `FIANTO_BASE_URL` points at decides the cluster, not the
-key prefix. There is no separate devnet API host to switch to.
+**Devnet is the sandbox.** Same keys (`fian_sk_live_…`, no test keys), same API, checkout and webhook format,
+test USDC on Solana devnet. Pick it with `new Fianto({ network: 'devnet' })` or `FIANTO_NETWORK=devnet`
+(SDK) and `--network devnet` or `FIANTO_NETWORK` (CLI, every command that calls the API, `events tail`
+included). Needs an SDK/CLI release that has `network`; default `mainnet`; anything else throws / exits 2.
+Live page: https://docs.fianto.xyz/developers/devnet.md
 
-## The four ways to test
+- Base URL `https://devnet-api.fianto.xyz` (`DEVNET_BASE_URL`); an explicit `baseUrl` / `FIANTO_BASE_URL` wins.
+- **Approval is required on both networks** (decided on mainnet); applications are created and rotated on
+  mainnet only, then the same keys work on devnet.
+- Served on devnet: v1 API, hosted checkout (one-time + subscriptions), webhooks, dashboard Developers,
+  Products, Orders, Payments, Customers, Subscriptions. **Not** on devnet: shops, payment links, coupons,
+  reports/exports, payer portal, admin.
+- Webhooks: set the devnet URL in the dashboard with the network picker on Devnet; it has its own signing
+  secret. Every event and every v1 object carries `network: "mainnet" | "devnet"`. Pass `{ network }` to
+  `verifyWebhook` / `createWebhookHandler` to refuse the other network (`network_mismatch`; an event with no
+  `network` fails too). `fianto trigger` samples say `mainnet` and `events tail` forwards no `network`: leave
+  `network` unset on a route you test with those.
+- No platform fee on devnet; fianto pays network fees and rent. No email. Checkout shows a "Devnet" badge
+  and a "Get test USDC" faucet link (https://faucet.circle.com/); explorer links carry `?cluster=devnet`.
+- A devnet call may answer 503 `service_busy` with `Retry-After`: retry after the delay.
+
+## Other ways to test
 
 1. **Signed local samples** — no API call, only the webhook secret:
 
@@ -38,7 +54,7 @@ key prefix. There is no separate devnet API host to switch to.
    npx @fianto/cli events tail --forward-to http://localhost:3000/api/webhooks/fianto --since 5m
    ```
 
-4. **Real payments without mainnet funds**: point the SDK/CLI at a self-hosted or local fianto backend
+4. **Your own backend**: instead of hosted devnet, point the SDK/CLI at a self-hosted or local fianto backend
    that runs on devnet or localnet, with
    an application created on that deployment: `export FIANTO_BASE_URL=http://localhost:3000` (https
    except `localhost`, `127.0.0.1`, `[::1]`; no `/v1` suffix). Keys from another deployment → 401 `invalid_api_credentials`.
@@ -62,7 +78,8 @@ The CLI reads the **shell environment, not `.env`** — export the variables or 
 |---|---|---|
 | `--app-id` | `FIANTO_APP_ID` | `whoami`, `events …`, `trigger test.event` |
 | `--app-secret` | `FIANTO_APP_SECRET` | same |
-| `--base-url` | `FIANTO_BASE_URL` | optional |
+| `--base-url` | `FIANTO_BASE_URL` | optional; wins over `--network` |
+| `--network mainnet\|devnet` | `FIANTO_NETWORK` | optional, default `mainnet`; every command that calls the API |
 | `--secret` / `--secret-file` | `FIANTO_WEBHOOK_SECRET` | `events tail`, `trigger --forward-to`, `sign` |
 
 | Command | Does |

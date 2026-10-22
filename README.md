@@ -33,7 +33,7 @@ finalized  ──► order PAID ──► signed webhook `order.paid` ──► 
 ```
 
 Non-custodial (nothing is held in between), USDC only, one-time payments and 30/365-day
-subscriptions, no test mode, no refund API. Full picture: [`references/concepts.md`](references/concepts.md).
+subscriptions, a devnet sandbox (test USDC), no refund API. Full picture: [`references/concepts.md`](references/concepts.md).
 
 ## What your agent can do with it
 
@@ -41,7 +41,7 @@ subscriptions, no test mode, no refund API. Full picture: [`references/concepts.
 - Add a checkout route, pay button and webhook route to Next.js, Express, Hono (Node or Cloudflare
   Workers), React or a plain HTML page
 - Sell subscriptions: recurring prices, subscription sessions, renewals, past-due handling, cancelling
-- Test without a test mode: signed sample events, `test.event`, forwarding real events to localhost
+- Test: the devnet sandbox (`network: 'devnet'`), signed sample events, `test.event`, forwarding real events to localhost
 
 **Debug**
 - `invalid_webhook`, `BodyAlreadyParsedError`, `invalid_api_credentials`, `url: null`,
@@ -102,7 +102,7 @@ environment.
     ├── webhooks.md          # verification challenge, signatures, 14 event types, retries, secret roll
     ├── subscriptions.md     # recurring prices, renewals, past due, cancelling
     ├── api.md               # auth, error codes, idempotency, pagination, rate limits
-    ├── testing.md           # testing without a test mode; the CLI
+    ├── testing.md           # the devnet sandbox, other ways to test; the CLI
     ├── security.md          # secrets, trust boundaries, prompt injection, actions needing confirmation
     ├── production.md        # performance, reliability, monitoring, go-live checklist
     └── concepts.md          # how fianto works, who pays what, FAQ for merchants and payers
