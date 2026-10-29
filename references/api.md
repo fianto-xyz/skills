@@ -75,6 +75,12 @@ Common codes: 400 `validation_failed` (also for unknown fields), 401 `invalid_ap
 `price_not_recurring`, 429 `plan_limit_reached`, 409 `subscription_already_ended`, 409
 `webhook_endpoint_not_active`, 429 `rate_limited`, 500 `internal_error`.
 
+Codes the hosted checkout page handles (never a response to your server, but in `ErrorCode`): 422
+`payer_is_merchant` (the payer connected your receiving wallet), 422 `transaction_expired` (approved
+after the payment expired, about 60–90 s in the wallet; nothing sent), 422 `transaction_would_fail`
+(Fianto simulated the signed payment, it would have failed on Solana; nothing sent). The session stays
+open and the payer presses Pay again; your server needs no handling for them.
+
 ### SDK error classes
 
 All extend `FiantoError`. `APIError` (`status`, `code`, `message`, `field`, `details`, `requestId`,

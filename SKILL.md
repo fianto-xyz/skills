@@ -3,7 +3,7 @@ name: fianto
 description: Use when adding, reviewing, debugging or explaining fianto (fianto.xyz) payments — the hosted USDC-on-Solana checkout. Covers merchant setup and credentials, checkout sessions, subscriptions, fianto webhooks (order.paid, subscription.*), shop and payment-link sales on the Shop application, the @fianto/sdk, @fianto/nextjs, @fianto/express, @fianto/hono, @fianto/js, @fianto/react and @fianto/cli packages, calls to api.fianto.xyz/v1, going to production, and fianto errors such as invalid_webhook, invalid_api_credentials, BodyAlreadyParsedError or a checkout url of null.
 metadata:
   author: fianto
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 # fianto
