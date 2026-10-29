@@ -77,15 +77,18 @@ Payload rules:
   subscription, `fian_plan_` plan, `fian_price_` price.
 - On the merchant's **Shop application** endpoint, `order_id` is fianto's: `shop_<uuid>` for a shop sale,
   `plink_<uuid>` for a payment-link sale; `metadata.source` says which (references/concepts.md).
-- Amounts in payloads (`amount`, `fee_amount`, `total_amount`, `period.amount_due`, `period.fee_due`,
-  `duplicate.amount`) are **strings of USDC base units, 6 decimals**: `"25000000"` = 25 USDC. Compare
+- Amounts in payloads (`amount`, `fee_amount`, `network_fee_amount`, `total_amount`, `period.amount_due`,
+  `period.fee_due`, `period.network_fee_due`, `duplicate.amount`) are **strings of USDC base units, 6 decimals**: `"25000000"` = 25 USDC. Compare
   against your price with `usdc.toBaseUnits('25.00')` or format with `usdc.format(...)` — never floats.
-  `amount` = your price (what you receive), `fee_amount` = service fee, `total_amount` = what the payer paid.
+  `amount` = your price (what you receive), `fee_amount` = service fee, `network_fee_amount` = the flat
+  network fee (USDC), `total_amount` = `amount` + `fee_amount` + `network_fee_amount` = what the payer paid.
+  `network_fee_amount` (and `period.network_fee_due`) is missing on events created before the fee
+  existed (October 2026; on `order.*`, before one-time payments carried it): treat missing as `"0"`.
 - Statuses are UPPERCASE; `mode` is lowercase. Absent values are `null`, not missing keys.
 - `customer.id` is `null` until a payment settles; on an expired order `customer.id` and
   `customer.wallet` are `null`.
 - Order objects (`order.*`), main fields: `object`, `id`, `order_id`, `checkout_session_id`, `status`, `amount`, `fee_amount`,
-  `total_amount`, `currency`, `customer { id, wallet, email, reference }`, `payment { id, signature }`,
+  `network_fee_amount`, `total_amount`, `currency`, `customer { id, wallet, email, reference }`, `payment { id, signature }`,
   `metadata`, `created_at`, `paid_at`, `expired_at`.
 - Subscription objects (`subscription.*`), main fields: `object`, `id`, `status`, `order_id`, `price_id`, `plan_id`,
   `product_name`, amounts, `interval` (`MONTH` = 30 days / `YEAR` = 365 days), `period_hours`,

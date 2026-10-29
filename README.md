@@ -26,7 +26,7 @@ Payer clicks Pay ──► your server creates a checkout session (secret key, s
         ▼
 fianto's hosted checkout ── payer's wallet signs ONE transaction:
         │                     price ─────────────► merchant's wallet
-        │                     service fee (if > 0) ► fianto
+        │                     service fee + network fee (if > 0) ► fianto
         ▼
 confirmed  ──► payer sees "Payment complete"
 finalized  ──► order PAID ──► signed webhook `order.paid` ──► your server fulfils

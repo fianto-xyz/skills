@@ -3,7 +3,7 @@ name: fianto
 description: Use when adding, reviewing, debugging or explaining fianto (fianto.xyz) payments — the hosted USDC-on-Solana checkout. Covers merchant setup and credentials, checkout sessions, subscriptions, fianto webhooks (order.paid, subscription.*), shop and payment-link sales on the Shop application, the @fianto/sdk, @fianto/nextjs, @fianto/express, @fianto/hono, @fianto/js, @fianto/react and @fianto/cli packages, calls to api.fianto.xyz/v1, going to production, and fianto errors such as invalid_webhook, invalid_api_credentials, BodyAlreadyParsedError or a checkout url of null.
 metadata:
   author: fianto
-  version: "0.5.1"
+  version: "0.6.0"
 ---
 
 # fianto
@@ -132,8 +132,9 @@ references/subscriptions.md.
    the open session with `url: null` (then `reissueLink`).
 7. **Money is exact.** Send `amount` as a decimal string (`"12.50"`, 0.01–1,000,000, ≤6 decimals).
    Webhook/API amounts come back as base-unit strings; convert with `usdc` from `@fianto/sdk`, never
-   floats. `amount` is what the merchant receives; the service fee is added on top and paid by the payer
-   (`total_amount` = `amount` + `fee_amount`).
+   floats. `amount` is what the merchant receives; the service fee and the flat network fee (USDC) are
+   added on top and paid by the payer (`total_amount` = `amount` + `fee_amount` + `network_fee_amount`,
+   on orders too).
 8. **Unknown is not failed.** A popup result `closed` means unknown; an `EXPIRED` order can still
    become `PAID`; a `FAILED` payment can have landed USDC. Payer copy says "check your order status
    before paying again" — never "payment failed" or "you were not charged" from these states. There is

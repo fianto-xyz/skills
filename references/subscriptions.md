@@ -79,7 +79,7 @@ every webhook apply (webhooks.md).
 
 ## Renewals
 
-- fianto's charging key signs each renewal and pays its Solana network fee; the payer pays price + service fee.
+- fianto's charging key signs each renewal and pays its Solana network fee; the payer pays price + service fee + the plan's network fee.
 - Attempts: 2 min after the period ends, then 1 h, 6 h, 24 h after it.
 - **Counted** failures: `INSUFFICIENT_FUNDS`, `DELEGATION_REVOKED`, `ACCOUNT_FROZEN`, `ACCOUNT_CLOSED`.
   Other failures retry every 5 min without using an attempt — except a renewal refused because the

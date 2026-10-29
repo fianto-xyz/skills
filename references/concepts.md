@@ -25,7 +25,7 @@ Payer clicks Pay ──► your server: POST /v1/checkout-sessions ──► { i
         ▼
 fianto checkout page ── payer's wallet signs ONE transaction:
         │                  price ──► merchant's wallet
-        │                  service fee (if > 0) ──► fianto treasury
+        │                  service fee + network fee (if > 0) ──► fianto treasury
         ▼
 fianto broadcasts it ──► CONFIRMED  (payer sees "Payment complete")
                      ──► FINALIZED  (order PAID, webhook order.paid ──► your server fulfils)
@@ -40,18 +40,25 @@ fianto broadcasts it ──► CONFIRMED  (payer sees "Payment complete")
 
 ## Who pays what
 
-| When | Price (USDC) | Service fee (USDC) | Solana network fee (SOL) | Account deposit (SOL) |
-|---|---|---|---|---|
-| One-time payment | Payer → merchant | Payer, when > 0 | fianto | None |
-| Starting a subscription | Payer, first period | Payer, when > 0 | fianto | fianto |
-| Each renewal | Pulled from payer's wallet | Pulled with it, when > 0 | fianto | None |
+| When | Price (USDC) | Service fee (USDC) | Network fee (USDC) | Solana network fee (SOL) | Account deposit (SOL) |
+|---|---|---|---|---|---|
+| One-time payment | Payer → merchant | Payer, when > 0 | Payer, when > 0 | fianto | None |
+| Starting a subscription | Payer, first period | Payer, when > 0 | Payer, when the plan carries one | fianto | fianto |
+| Each renewal | Pulled from payer's wallet | Pulled with it, when > 0 | Pulled with it, when the plan carries one | fianto | None |
 
 Payers need only USDC, no SOL. fianto closes ended subscriptions itself; there is no reclaim step.
 
 - The merchant receives the **full price**; fianto's service fee (capped at 10 %, rounded down in
   the payer's favour) is **added on top** and paid by the payer. The checkout page always shows a
   "Service fee" line ("None" when zero). The fee is fixed when the session is created.
-- In the API: `amount` = price, `fee_amount` = fee, `total_amount` = what the payer paid (base units).
+- The **network fee** is a flat fee in USDC (a fianto setting, currently 0.01 USDC) that the payer
+  pays on top, to fianto's treasury in the same transfer as the service fee. One-time payments carry
+  it since 2026-10-29, fixed on the order when its checkout is created (a checkout opened earlier
+  carries `"0"`); a subscription carries its plan's, fixed when the plan is created (older plans
+  `"0"`). It is not the Solana network fee (SOL), which fianto pays.
+- In the API: `amount` = price, `fee_amount` = fee, `network_fee_amount` = network fee,
+  `total_amount` = `amount` + `fee_amount` + `network_fee_amount` = what the payer paid (base units),
+  on sessions, orders, payments and subscriptions.
 - The payer needs an existing, unfrozen USDC token account, and enough USDC (no SOL); the
   wallet must be able to sign a transaction without sending it.
 
@@ -105,7 +112,7 @@ A handler on the merchant's own application never receives them. Payment links s
 | "The payer saw success but my order isn't paid" | Normal for a few moments: success shows at confirmed, `order.paid` comes at finalized. If it stays pending, check the webhook URL is verified and read the order with `retrieveByOrderId` |
 | "The popup closed — did they pay?" | Unknown. Check the order; never tell them they weren't charged |
 | "Can I refund through fianto?" | No. Send USDC from the merchant wallet to the payer's wallet |
-| "Why is the payer charged more than my price?" | The service fee is added on top (when above zero), and every subscription charge, the first included, adds the plan's flat network fee in USDC (currently 0.01 USDC); fianto pays the Solana network fee and account deposits |
+| "Why is the payer charged more than my price?" | The service fee is added on top (when above zero), and so is a flat network fee in USDC (currently 0.01 USDC): on every one-time payment since 2026-10-29 and on every subscription charge whose plan carries one, the first included; fianto pays the Solana network fee and account deposits |
 | "Can I change a subscriber's price?" | No; add a new price for new subscribers. Existing ones keep their terms |
 | "The payer paid twice" | `order.duplicate_payment`; the USDC is in the merchant's wallet — refund by hand |
 | "Can I test without real money?" | Yes, on devnet: `new Fianto({ network: 'devnet' })` or `FIANTO_NETWORK=devnet`, same keys, test USDC (faucet link on the checkout page). Approved merchants only. Also `fianto trigger` samples or a self-hosted/local backend |

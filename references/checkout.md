@@ -109,7 +109,8 @@ the payment is `FAILED` with funds landed. Keep the webhook route listening.
 - The checkout page refuses `build_limit_reached` (10 successful builds / 30 attempts per session) or
   `too_close_to_expiry` (no build in the last 120 s): cancel and create a new session with the same
   `order_id`.
-- The payer needs an existing, unfrozen USDC token account, and the price + fee in USDC. Payers need no
+- The payer needs an existing, unfrozen USDC token account, and the price + fee + network fee in USDC
+  (the session's `total_amount`). Payers need no
   SOL: fianto pays the Solana network fee and any account deposit.
 - The merchant's receiving wallet must already have a USDC token account, or create fails with 422
   `merchant_token_account_missing` (fix: send that wallet any amount of USDC once). fianto never creates
