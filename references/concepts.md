@@ -48,9 +48,10 @@ fianto broadcasts it ──► CONFIRMED  (payer sees "Payment complete")
 
 Payers need only USDC, no SOL. fianto closes ended subscriptions itself; there is no reclaim step.
 
-- The merchant receives the **full price**; fianto's service fee (capped at 10 %, rounded down in
-  the payer's favour) is **added on top** and paid by the payer. The checkout page always shows a
-  "Service fee" line ("None" when zero). The fee is fixed when the session is created.
+- The merchant receives the **full price**; fianto's service fee (a percentage of the price set by
+  fianto, 0 % during the beta; rounded down in the payer's favour) is **added on top** and paid by the
+  payer. The checkout page always shows a "Fianto fee" row ("0.00" when there is none). The fee is
+  fixed when the session is created.
 - The **network fee** is a flat fee in USDC (a fianto setting, currently 0.01 USDC) that the payer
   pays on top, to fianto's treasury in the same transfer as the service fee. One-time payments carry
   it since 2026-10-29, fixed on the order when its checkout is created (a checkout opened earlier
