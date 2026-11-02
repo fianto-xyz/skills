@@ -102,7 +102,7 @@ A handler on the merchant's own application never receives them. Payment links s
 
 - Not a custodian, and there is **no refund API**: refunds are USDC the merchant sends from their own
   wallet.
-- **Test keys are per network.** Devnet is a sandbox with test USDC and its own secret `fian_sk_test_…` (same app id; created on the dashboard with Devnet selected). A live key on devnet or a test key on mainnet → 401 `api_key_wrong_network`. With a test key the SDK/CLI infer devnet; older SDKs need `network: 'devnet'` / `FIANTO_NETWORK=devnet`. Other testing: signed samples, `test.event`, self-hosted/local backends.
+- **Test keys are per network.** Devnet is a sandbox with test USDC and its own secret `fian_sk_test_…` (same app id; created on the dashboard with Devnet selected). A valid live key on devnet or a valid test key on mainnet → 401 `api_key_wrong_network` (a fabricated or revoked key → `invalid_api_credentials`). With a test key and no `network` / `FIANTO_NETWORK` set, the SDK/CLI infer devnet (0.6.0+); older SDKs need `network: 'devnet'` / `FIANTO_NETWORK=devnet`. Other testing: signed samples, `test.event`, self-hosted/local backends.
 - Not usable before review: every merchant account is approved by an admin first.
 - fianto sends payers **no emails or receipts**; the email a payer enters goes to the shop.
 

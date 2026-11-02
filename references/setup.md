@@ -20,7 +20,7 @@ npx @fianto/cli whoami
 
 `whoami` prints the application and app id, the merchant's name, and the webhook status and URL (or
 `not configured`). A 401 `invalid_api_credentials` means wrong, revoked or expired keys, keys from another deployment
-(`FIANTO_BASE_URL`), a disabled application, or an account that is not approved and active. A live key on devnet or a test key on mainnet is 401 `api_key_wrong_network`.
+(`FIANTO_BASE_URL`), a disabled application, or an account that is not approved and active. A valid live key on devnet or a valid test key on mainnet is 401 `api_key_wrong_network`.
 
 ## 1. Create the account
 
@@ -75,7 +75,7 @@ API keys answer 401. Decision emails are best effort; the setup page is the trut
 | `FIANTO_APP_SECRET` | Shown once at create / roll | same — server only |
 | `FIANTO_WEBHOOK_SECRET` | "Reveal signing secret" (after a URL is set) | webhook handler, CLI `trigger`/`events tail`/`sign` |
 | `FIANTO_BASE_URL` | Only for a self-hosted or local fianto backend | SDK, CLI |
-| `FIANTO_NETWORK` | Optional: `devnet` for the test-USDC sandbox, with a `fian_sk_test_…` secret (default: the key's network) | SDK, CLI |
+| `FIANTO_NETWORK` | Optional: `devnet` for the test-USDC sandbox, with a `fian_sk_test_…` secret (default: the key's network (0.6.0+); older: mainnet) | SDK, CLI |
 
 Next.js reads `.env.local` itself. Node (Express, Hono) needs `node --env-file=.env` (Node ≥20.6) or
 `dotenv`. Cloudflare Workers: Worker secrets, read from `c.env`. The CLI reads only exported shell

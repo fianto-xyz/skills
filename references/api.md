@@ -48,7 +48,7 @@ problem (bad header, unknown/revoked secret, disabled app, merchant not approved
 `api_key_wrong_network` (fabricated/revoked keys still get `invalid_api_credentials`).
 
 Rolling a secret (dashboard): old secret stops "Immediately", "In 1 hour" (default) or "In 24 hours";
-both work in between (max two valid). Disabling an application is permanent (revokes secrets, disables
+both work in between (max two valid per network). Disabling an application is permanent (revokes secrets, disables
 its webhook, cancels pending deliveries).
 
 ## Error body

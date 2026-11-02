@@ -157,8 +157,8 @@ FIANTO_APP_ID=fian_app_...
 FIANTO_APP_SECRET=fian_sk_live_...
 FIANTO_WEBHOOK_SECRET=whsec_...        # "Reveal signing secret" once the app has a webhook URL
 # FIANTO_BASE_URL=...                  # only for a self-hosted or local fianto backend
-# FIANTO_NETWORK=devnet                # optional: the devnet sandbox (test USDC) with a `fian_sk_test_…` secret; default mainnet (a test key alone selects devnet).
-#                                      # needs the SDK/CLI release that adds `network` (the next minor after the current published one)
+# FIANTO_NETWORK=devnet                # optional: the devnet sandbox (test USDC) with a `fian_sk_test_…` secret; default: the key's network.
+#                                      # a test key alone selects devnet from SDK/CLI 0.6.0; older releases need FIANTO_NETWORK=devnet
 ```
 
 ```ts
@@ -266,8 +266,8 @@ npx @fianto/cli trigger order.paid --forward-to http://localhost:3000/api/webhoo
 Full checklist: references/production.md. The essentials:
 
 - Merchant account approved: applications (and so keys) exist only after approval, and keys answer
-  401 `invalid_api_credentials` whenever the account is not approved and active. A live key on devnet or a
-  test key on mainnet → 401 `api_key_wrong_network`.
+  401 `invalid_api_credentials` whenever the account is not approved and active. A valid live key on devnet or a
+  valid test key on mainnet → 401 `api_key_wrong_network`.
 - Receiving wallet has a USDC token account (else 422 `merchant_token_account_missing`: send it any
   USDC once).
 - Webhook URL verified, secret loaded in production, route dedupes on `event.id`.

@@ -2,10 +2,10 @@
 
 Live pages: https://docs.fianto.xyz/developers/devnet.md, https://docs.fianto.xyz/developers/testing.md, https://docs.fianto.xyz/developers/cli.md
 
-**Devnet is the sandbox.** Its own secret (`fian_sk_test_…`, same app id; live keys are refused with 401 `api_key_wrong_network`), same API, checkout and webhook format,
+**Devnet is the sandbox.** Its own secret (`fian_sk_test_…`, same app id; valid live keys are refused with 401 `api_key_wrong_network`), same API, checkout and webhook format,
 test USDC on Solana devnet. Pick it with `new Fianto({ network: 'devnet' })` or `FIANTO_NETWORK=devnet`
 (SDK) and `--network devnet` or `FIANTO_NETWORK` (CLI, every command that calls the API, `events tail`
-included). Needs an SDK/CLI release that has `network`; default `mainnet`; anything else throws / exits 2.
+included). Needs an SDK/CLI release that has `network`; default the key's network (0.6.0+), else `mainnet`; anything else throws / exits 2.
 
 - Base URL `https://devnet-api.fianto.xyz` (`DEVNET_BASE_URL`); an explicit `baseUrl` / `FIANTO_BASE_URL` wins.
 - **Approval is required on both networks** (decided on mainnet); applications are created on mainnet; on devnet
