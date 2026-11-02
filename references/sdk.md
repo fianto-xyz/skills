@@ -41,9 +41,9 @@ const fianto = new Fianto(); // FIANTO_APP_ID, FIANTO_APP_SECRET, optional FIANT
 | Option | Env | Default |
 |---|---|---|
 | `appId` | `FIANTO_APP_ID` | required (`fian_app_…`) |
-| `appSecret` | `FIANTO_APP_SECRET` | required (`fian_sk_live_…`), server only |
+| `appSecret` | `FIANTO_APP_SECRET` | required (`fian_sk_live_…` mainnet, `fian_sk_test_…` devnet), server only |
 | `baseUrl` | `FIANTO_BASE_URL` | `https://api.fianto.xyz` (https except `localhost`, `127.0.0.1`, `[::1]`; **without** `/v1`) |
-| `network` | `FIANTO_NETWORK` | `'mainnet'`; `'devnet'` = sandbox at `https://devnet-api.fianto.xyz` (`DEVNET_BASE_URL`), test USDC, same keys. Needs the SDK release that adds `network` (the next minor after the current published one). Other value throws `Invalid network: expected "mainnet" or "devnet".`. `baseUrl` wins |
+| `network` | `FIANTO_NETWORK` | the key's network: a `fian_sk_test_` secret selects `'devnet'`, else `'mainnet'`; `'devnet'` = sandbox at `https://devnet-api.fianto.xyz` (`DEVNET_BASE_URL`), test USDC, takes only a test key. A `network` that contradicts the key's prefix, or a known key with the other network's host (`api.fianto.xyz` / `devnet-api.fianto.xyz`), throws a `FiantoError` locally (custom hosts unchecked); the API answers `api_key_wrong_network`. Needs the SDK release that adds `network` (the next minor after the current published one); older SDKs work with a test key if `network: 'devnet'` is set. Other value throws `Invalid network: expected "mainnet" or "devnet".`. `baseUrl` wins |
 | `timeoutMs` | — | 30000 per attempt |
 | `maxRetries` | — | 2 (0–10) |
 | `fetch` | — | global `fetch` |

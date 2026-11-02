@@ -7,7 +7,9 @@ Live pages: https://docs.fianto.xyz/developers/overview.md,
 
 - Base URL `https://api.fianto.xyz`; every path starts `/v1/`. Bodies are JSON, **snake_case**.
 - Applications are created in the dashboard (password + 2FA). Each has an app id `fian_app_…`, an app
-  secret `fian_sk_live_…` (shown once; the prefix is the same on every deployment), and one webhook endpoint.
+  secret `fian_sk_live_…` (shown once; mainnet only), and one webhook endpoint. Devnet takes a separate secret `fian_sk_test_…` (same app id)
+  that you create on the dashboard with Devnet selected → Developers → the API key → "Create test key" (password + code, shown once;
+  never created automatically, approved merchants only). Rolling one secret never touches the other.
   Limits: 10 active / 100 total applications per merchant.
 - Products and prices are merchant-wide and **read-only** in v1. Sessions, orders, payments,
   subscriptions and events are scoped to the calling application.
@@ -39,10 +41,11 @@ Authorization: Basic base64(app_id:app_secret)
 curl https://api.fianto.xyz/v1/application --user "$FIANTO_APP_ID:$FIANTO_APP_SECRET"
 ```
 
-No bearer tokens, no `X-App-Id` header, no publishable/browser key, no test keys. Every credential
+No bearer tokens, no `X-App-Id` header, no publishable/browser key. Every credential
 problem (bad header, unknown/revoked secret, disabled app, merchant not approved/active) → 401
 `invalid_api_credentials` with `WWW-Authenticate: Basic realm="fianto"`; the SDK throws
-`AuthenticationError`.
+`AuthenticationError`. A valid key on the other network (live → devnet-api, test → api) → 401
+`api_key_wrong_network` (fabricated/revoked keys still get `invalid_api_credentials`).
 
 Rolling a secret (dashboard): old secret stops "Immediately", "In 1 hour" (default) or "In 24 hours";
 both work in between (max two valid). Disabling an application is permanent (revokes secrets, disables
@@ -65,7 +68,7 @@ Branch on `code` (open-ended: treat unknown codes by HTTP status). `details` lis
 there were several. `request_id` is also the `X-Request-Id` header; send your own `X-Request-Id`
 (8–64 of `[A-Za-z0-9_-]`) to correlate logs. Quote it to support@fianto.xyz.
 
-Common codes: 400 `validation_failed` (also for unknown fields), 401 `invalid_api_credentials`,
+Common codes: 400 `validation_failed` (also for unknown fields), 401 `invalid_api_credentials` / `api_key_wrong_network`,
 400 `idempotency_key_required` / `idempotency_key_invalid`, 422 `idempotency_key_reused`,
 409 `idempotency_request_in_progress`, 409 `idempotency_response_unreadable`, 400
 `amount_or_price_required`, 400 `amount_out_of_range`, 400 `url_insecure`, 400

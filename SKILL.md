@@ -49,7 +49,7 @@ exist. Correct anything taken from it:
 
 | Marketing site / guess | Real fianto |
 |---|---|
-| `Authorization: Bearer …`, `X-App-Id`, `app_test_`/`app_live_` keys, test keys, publishable key | HTTP Basic `app_id:app_secret` (`fian_app_…` / `fian_sk_live_…`); no test keys (the same keys work on devnet), no browser key |
+| `Authorization: Bearer …`, `X-App-Id`, `app_test_`/`app_live_` keys, publishable key | HTTP Basic `app_id:app_secret` (`fian_app_…` / `fian_sk_live_…` on mainnet, `fian_sk_test_…` on devnet: one app id, two secrets); no browser key |
 | `POST /v1/checkout/sessions` | `POST /v1/checkout-sessions` |
 | `token`, `currency`, `interval`, `plan` fields on create | Unknown fields → 400 `validation_failed`. USDC is implicit; intervals come from a recurring price |
 | `payment.succeeded`, `payment.completed`, `payment.failed`, `session.expired`, `subscription.canceled` | `order.paid`, `checkout.session.expired`, `order.expired`, `subscription.ended`, … (14 types, see references/webhooks.md) |
@@ -157,7 +157,7 @@ FIANTO_APP_ID=fian_app_...
 FIANTO_APP_SECRET=fian_sk_live_...
 FIANTO_WEBHOOK_SECRET=whsec_...        # "Reveal signing secret" once the app has a webhook URL
 # FIANTO_BASE_URL=...                  # only for a self-hosted or local fianto backend
-# FIANTO_NETWORK=devnet                # optional: the devnet sandbox (test USDC), same keys; default mainnet.
+# FIANTO_NETWORK=devnet                # optional: the devnet sandbox (test USDC) with a `fian_sk_test_…` secret; default mainnet (a test key alone selects devnet).
 #                                      # needs the SDK/CLI release that adds `network` (the next minor after the current published one)
 ```
 
@@ -266,7 +266,8 @@ npx @fianto/cli trigger order.paid --forward-to http://localhost:3000/api/webhoo
 Full checklist: references/production.md. The essentials:
 
 - Merchant account approved: applications (and so keys) exist only after approval, and keys answer
-  401 `invalid_api_credentials` whenever the account is not approved and active.
+  401 `invalid_api_credentials` whenever the account is not approved and active. A live key on devnet or a
+  test key on mainnet → 401 `api_key_wrong_network`.
 - Receiving wallet has a USDC token account (else 422 `merchant_token_account_missing`: send it any
   USDC once).
 - Webhook URL verified, secret loaded in production, route dedupes on `event.id`.

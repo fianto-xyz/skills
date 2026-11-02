@@ -2,14 +2,14 @@
 
 Live pages: https://docs.fianto.xyz/developers/devnet.md, https://docs.fianto.xyz/developers/testing.md, https://docs.fianto.xyz/developers/cli.md
 
-**Devnet is the sandbox.** Same keys (`fian_sk_live_…`, no test keys), same API, checkout and webhook format,
+**Devnet is the sandbox.** Its own secret (`fian_sk_test_…`, same app id; live keys are refused with 401 `api_key_wrong_network`), same API, checkout and webhook format,
 test USDC on Solana devnet. Pick it with `new Fianto({ network: 'devnet' })` or `FIANTO_NETWORK=devnet`
 (SDK) and `--network devnet` or `FIANTO_NETWORK` (CLI, every command that calls the API, `events tail`
 included). Needs an SDK/CLI release that has `network`; default `mainnet`; anything else throws / exits 2.
 
 - Base URL `https://devnet-api.fianto.xyz` (`DEVNET_BASE_URL`); an explicit `baseUrl` / `FIANTO_BASE_URL` wins.
-- **Approval is required on both networks** (decided on mainnet); applications are created and rotated on
-  mainnet only, then the same keys work on devnet.
+- **Approval is required on both networks** (decided on mainnet); applications are created on mainnet; on devnet
+  create the test key (dashboard, Devnet selected → Developers → the API key → "Create test key"; shown once). Rolling one network's secret never touches the other.
 - Served on devnet: v1 API, hosted checkout (one-time + subscriptions), webhooks, dashboard Developers,
   Products, Orders, Payments, Customers, Subscriptions. **Not** on devnet: shops, payment links, coupons,
   reports/exports, payer portal, admin.
@@ -58,7 +58,7 @@ included). Needs an SDK/CLI release that has `network`; default `mainnet`; anyth
 4. **Your own backend**: instead of hosted devnet, point the SDK/CLI at a self-hosted or local fianto backend
    that runs on devnet or localnet, with
    an application created on that deployment: `export FIANTO_BASE_URL=http://localhost:3000` (https
-   except `localhost`, `127.0.0.1`, `[::1]`; no `/v1` suffix). Keys from another deployment → 401 `invalid_api_credentials`.
+   except `localhost`, `127.0.0.1`, `[::1]`; no `/v1` suffix). Keys from another deployment → 401 `invalid_api_credentials`; a real key on the wrong network → `api_key_wrong_network`.
 
 In unit tests, sign fixtures yourself:
 

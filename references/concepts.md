@@ -102,7 +102,7 @@ A handler on the merchant's own application never receives them. Payment links s
 
 - Not a custodian, and there is **no refund API**: refunds are USDC the merchant sends from their own
   wallet.
-- **No test keys.** Devnet is a sandbox with test USDC and the same keys: `network: 'devnet'` / `FIANTO_NETWORK=devnet`. Other testing: signed samples, `test.event`, self-hosted/local backends.
+- **Test keys are per network.** Devnet is a sandbox with test USDC and its own secret `fian_sk_test_…` (same app id; created on the dashboard with Devnet selected). A live key on devnet or a test key on mainnet → 401 `api_key_wrong_network`. With a test key the SDK/CLI infer devnet; older SDKs need `network: 'devnet'` / `FIANTO_NETWORK=devnet`. Other testing: signed samples, `test.event`, self-hosted/local backends.
 - Not usable before review: every merchant account is approved by an admin first.
 - fianto sends payers **no emails or receipts**; the email a payer enters goes to the shop.
 
@@ -116,14 +116,14 @@ A handler on the merchant's own application never receives them. Payment links s
 | "Why is the payer charged more than my price?" | The service fee is added on top (when above zero), and so is a flat network fee in USDC (currently 0.01 USDC): on every one-time payment since 2026-10-29 and on every subscription charge whose plan carries one, the first included; fianto pays the Solana network fee and account deposits |
 | "Can I change a subscriber's price?" | No; add a new price for new subscribers. Existing ones keep their terms |
 | "The payer paid twice" | `order.duplicate_payment`; the USDC is in the merchant's wallet — refund by hand |
-| "Can I test without real money?" | Yes, on devnet: `new Fianto({ network: 'devnet' })` or `FIANTO_NETWORK=devnet`, same keys, test USDC (faucet link on the checkout page). Approved merchants only. Also `fianto trigger` samples or a self-hosted/local backend |
+| "Can I test without real money?" | Yes, on devnet: `new Fianto({ network: 'devnet' })` or `FIANTO_NETWORK=devnet`, a `fian_sk_test_…` key, test USDC (faucet link on the checkout page). Approved merchants only. Also `fianto trigger` samples or a self-hosted/local backend |
 | "Can I create a payment link through the API?" | No. Payment links are made in the dashboard only; from code, create a checkout session |
 | "Webhooks arrive with `order_id` `plink_…` or `shop_…`" | Payment-link or shop sales, sent to the merchant's Shop application endpoint; read `metadata.source` |
 | "Who does the payer contact?" | The shop, for payments and refunds; support@fianto.xyz for the checkout page or portal |
 
 ## Ids at a glance
 
-`fian_app_` application · `fian_sk_live_` app secret · `whsec_` webhook secret · `fian_cs_` checkout
+`fian_app_` application · `fian_sk_live_` mainnet app secret · `fian_sk_test_` devnet app secret · `whsec_` webhook secret · `fian_cs_` checkout
 session · `fian_ord_` order · `fian_pay_` payment · `fian_cus_` customer · `fian_sub_` subscription ·
 `fian_plan_` on-chain plan · `fian_price_` price · `evt_` event · `req_` request id. `order_id` is
 always the merchant's own id.
